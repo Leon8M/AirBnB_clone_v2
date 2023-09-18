@@ -1,17 +1,16 @@
-#!/usr/bin/python3
-"""This module defines the User class"""
-from models.base_model import BaseModel, Base
 from sqlalchemy import Column, String
+from sqlalchemy.orm import relationship
+from models.base_model import BaseModel, Base
 
 class User(BaseModel, Base):
-    """This class represents a user in the system"""
-    __tablename__ = 'users'
-
+    """A class representing a User."""
+    
+    _tablename_ = 'users'  # Table name
+    
     email = Column(String(128), nullable=False)
     password = Column(String(128), nullable=False)
-    first_name = Column(String(128), nullable=True)
-    last_name = Column(String(128), nullable=True)
-
-    def __init__(self, *args, **kwargs):
-        """Initialize a new User instance"""
-        super().__init__(*args, **kwargs)
+    first_name = Column(String(128))
+    last_name = Column(String(128))
+    
+    # Add relationship with Place
+    places = relationship('Place', backref='user', cascade='all, delete-orphan')
