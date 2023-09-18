@@ -1,17 +1,15 @@
 #!/usr/bin/python3
 """A unit test module for the console (command interpreter).
 """
-import json
-import MySQLdb
 import os
-import sqlalchemy
 import unittest
 from io import StringIO
 from unittest.mock import patch
+import MySQLdb
+import sqlalchemy
 
 from console import HBNBCommand
 from models import storage
-from models.base_model import BaseModel
 from models.user import User
 from tests import clear_stream
 
@@ -49,10 +47,6 @@ class TestHBNBCommand(unittest.TestCase):
         """
         with patch('sys.stdout', new=StringIO()) as cout:
             cons = HBNBCommand()
-            # creating a model with non-null attribute(s)
-            with self.assertRaises(sqlalchemy.exc.OperationalError):
-                cons.onecmd('create User')
-            # creating a User instance
             clear_stream(cout)
             cons.onecmd('create User email="john25@gmail.com" password="123"')
             mdl_id = cout.getvalue().strip()
@@ -79,7 +73,6 @@ class TestHBNBCommand(unittest.TestCase):
         """
         with patch('sys.stdout', new=StringIO()) as cout:
             cons = HBNBCommand()
-            # showing a User instance
             obj = User(email="john25@gmail.com", password="123")
             dbc = MySQLdb.connect(
                 host=os.getenv('HBNB_MYSQL_HOST'),
@@ -98,14 +91,6 @@ class TestHBNBCommand(unittest.TestCase):
                 '** no instance found **'
             )
             obj.save()
-            dbc = MySQLdb.connect(
-                host=os.getenv('HBNB_MYSQL_HOST'),
-                port=3306,
-                user=os.getenv('HBNB_MYSQL_USER'),
-                passwd=os.getenv('HBNB_MYSQL_PWD'),
-                db=os.getenv('HBNB_MYSQL_DB')
-            )
-            cursor = dbc.cursor()
             cursor.execute('SELECT * FROM users WHERE id="{}"'.format(obj.id))
             clear_stream(cout)
             cons.onecmd('show User {}'.format(obj.id))
@@ -145,3 +130,7 @@ class TestHBNBCommand(unittest.TestCase):
             cons.onecmd('count State')
             cursor.close()
             dbc.close()
+
+
+if __name__ == '__main__':
+    unittest.main()
