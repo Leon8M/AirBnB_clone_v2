@@ -1,20 +1,17 @@
 #!/usr/bin/python3
 """This module defines a class User"""
+from models.base_model import BaseModel, Base
 from sqlalchemy import Column, String
 from sqlalchemy.orm import relationship
-from models.base_model import BaseModel, Base
+from os import getenv
+
 
 class User(BaseModel, Base):
-    """A class representing a User."""
-    
-    _tablename_ = 'users'  # Table name
-    
+    """ This class defines a user by various attributes """
+    __tablename__ = "users"
     email = Column(String(128), nullable=False)
     password = Column(String(128), nullable=False)
     first_name = Column(String(128))
     last_name = Column(String(128))
-    
-    # Add relationship with Place
-    places = relationship('Place', backref='user', cascade='all, delete-orphan')
-    reviews = relationship("Review", backref="user", cascade="all, delete-orphan")
-
+    places = relationship("Place", backref="user", cascade="delete")
+    reviews = relationship("Review", backref="user", cascade="delete")
