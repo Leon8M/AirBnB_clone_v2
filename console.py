@@ -145,7 +145,7 @@ class HBNBCommand(cmd.Cmd):
                     value = int(value)
                 kwargs[name] = value
 
-        new_instance = HBNBCommand.classes[className]
+        new_instance = HBNBCommand.classes[className]()
         
         for attrName, attrValue in kwargs.items():
             setattr(new_instance, attrName, attrValue) 
