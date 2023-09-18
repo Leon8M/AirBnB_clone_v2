@@ -113,18 +113,46 @@ class HBNBCommand(cmd.Cmd):
         """ Overrides the emptyline method of CMD """
         pass
 
-    def do_create(self, args):
-        """ Create an object of any class"""
-        if not args:
-            print("** class name missing **")
-            return
-        elif args not in HBNBCommand.classes:
-            print("** class doesn't exist **")
-            return
-        new_instance = HBNBCommand.classes[args]()
-        storage.save()
+  def do_create(self, args):
+    """
+    Create an object of any class with given parameters.
+
+    Args:
+        args (str): The command arguments containing class name and optional parameters.
+
+    Usage:
+        create <className> [param1=value1 param2=value2 ...]
+
+    Examples:
+        create BaseModel name="example" number_rooms=3
+        create User email="user@example.com" password="password"
+    """
+    if not args:
+        print("** class name missing **")
+        return
+
+    class_name, *params = args.split()
+    if class_name not in HBNBCommand.classes:
+        print("** class doesn't exist **")
+        return
+
+    new_instance = HBNBCommand.classes[class_name]()
+
+    # Parse and set attributes
+    for param in params:
+        try:
+            attr, value = param.split('=')
+            if attr in HBNBCommand.TYPES:
+                value = HBNBCommand.TYPES[attr](value)
+            setattr(new_instance, attr, value)
+        except ValueError:
+            print(f"Invalid parameter: {param}")
+
+    if not hasattr(new_instance, 'id'):
+        print("** missing 'id' attribute **")
+    else:
+        new_instance.save()
         print(new_instance.id)
-        storage.save()
 
     def help_create(self):
         """ Help information for the create method """
