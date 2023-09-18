@@ -113,46 +113,46 @@ class HBNBCommand(cmd.Cmd):
         """ Overrides the emptyline method of CMD """
         pass
 
-  def do_create(self, args):
-    """
-    Create an object of any class with given parameters.
+    def do_create(self, args):
+        """
+        Create an object of any class with given parameters.
 
-    Args:
-        args (str): The command arguments containing class name and optional parameters.
+        Args:
+            args (str): The command arguments containing class name and optional parameters.
 
-    Usage:
-        create <className> [param1=value1 param2=value2 ...]
+        Usage:
+            create <className> [param1=value1 param2=value2 ...]
 
-    Examples:
-        create BaseModel name="example" number_rooms=3
-        create User email="user@example.com" password="password"
-    """
-    if not args:
-        print("** class name missing **")
-        return
+        Examples:
+            create BaseModel name="example" number_rooms=3
+            create User email="user@example.com" password="password"
+         """
+        if not args:
+            print("** class name missing **")
+            return
 
-    class_name, *params = args.split()
-    if class_name not in HBNBCommand.classes:
-        print("** class doesn't exist **")
-        return
+        class_name, *params = args.split()
+        if class_name not in HBNBCommand.classes:
+            print("** class doesn't exist **")
+            return
 
-    new_instance = HBNBCommand.classes[class_name]()
+        new_instance = HBNBCommand.classes[class_name]()
 
-    # Parse and set attributes
-    for param in params:
-        try:
-            attr, value = param.split('=')
-            if attr in HBNBCommand.TYPES:
-                value = HBNBCommand.TYPES[attr](value)
-            setattr(new_instance, attr, value)
-        except ValueError:
-            print(f"Invalid parameter: {param}")
+        # Parse and set attributes
+        for param in params:
+            try:
+                attr, value = param.split('=')
+                if attr in HBNBCommand.TYPES:
+                    value = HBNBCommand.TYPES[attr](value)
+                setattr(new_instance, attr, value)
+            except ValueError:
+                print(f"Invalid parameter: {param}")
 
-    if not hasattr(new_instance, 'id'):
-        print("** missing 'id' attribute **")
-    else:
-        new_instance.save()
-        print(new_instance.id)
+        if not hasattr(new_instance, 'id'):
+            print("** missing 'id' attribute **")
+        else:
+            new_instance.save()
+            print(new_instance.id)
 
     def help_create(self):
         """ Help information for the create method """
