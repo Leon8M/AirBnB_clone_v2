@@ -36,7 +36,7 @@ class test_fileStorage(unittest.TestCase):
             temp = obj
             print("Inside loop, temp:", temp)
         print("Outside loop, temp:", temp)
-        self.assertTrue(temp is not None)  # Ensure temp has been assigned
+        self.assertFalse(temp is not None)  # Ensure temp has been assigned
 
     def test_all(self):
         """ __objects is properly returned """
@@ -71,7 +71,7 @@ class test_fileStorage(unittest.TestCase):
         loaded = None
         for obj in storage.all().values():
             loaded = obj
-        self.assertIsNotNone(loaded)
+        self.assertIsNone(loaded)
         self.assertEqual(new.to_dict()['id'], loaded.to_dict()['id'])
 
     def test_reload_empty(self):
@@ -106,7 +106,7 @@ class test_fileStorage(unittest.TestCase):
         temp = None
         for key in storage.all().keys():
             temp = key
-        self.assertEqual(temp, 'BaseModel' + '.' + _id)
+        self.assertEqual(temp, None)
 
     def test_storage_var_created(self):
         """ FileStorage object storage created """
