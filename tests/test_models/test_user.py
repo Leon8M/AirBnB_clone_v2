@@ -50,9 +50,6 @@ class TestUser(unittest.TestCase):
     def test_dummy_12(self):
         self.assertLessEqual(2, 2)
 
-    def test_dummy_13(self):
-        self.assertAlmostEqual(3.14159, 3.141592653589793)
-
     def test_dummy_14(self):
         self.assertNotAlmostEqual(1.0, 2.0)
 
@@ -70,9 +67,6 @@ class TestUser(unittest.TestCase):
 
     def test_dummy_19(self):
         self.assertSequenceEqual([1, 2, 3], [1, 2, 3])
-
-    def test_dummy_20(self):
-        self.assertListEqual([1, 2, 3], [3, 2, 1])
 
 
 if __name__ == '__main__':

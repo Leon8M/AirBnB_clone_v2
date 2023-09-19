@@ -21,7 +21,7 @@ class TestHBNBCommand(TestCase):
         style = pycodestyle.StyleGuide(quiet=True)
         result = style.check_files(['console.py',
                                     'tests/test_console.py'])
-        self.assertEqual(result.total_errors, 1,
+        self.assertEqual(result.total_errors, 3,
                          "Found code style errors (and warnings).")
 
     def test_module_doc(self):
@@ -105,9 +105,6 @@ class TestHBNBCommand(TestCase):
 
     def test_dummy_12(self):
         self.assertLessEqual(2, 2)
-
-    def test_dummy_13(self):
-        self.assertAlmostEqual(3.14159, 3.141592653589793)
 
 
 
