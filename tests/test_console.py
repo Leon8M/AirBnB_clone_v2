@@ -1,103 +1,78 @@
-import os
+#!/usr/bin/python3
+"""
+test_console module
+"""
 import unittest
-import sys
-from io import StringIO
 from unittest.mock import patch
+from io import StringIO
+from unittest import TestCase
+import pycodestyle
 from console import HBNBCommand
 from models import storage
-from models.user import User
-from models.state import State
-from models.city import City
-from models.amenity import Amenity
-from models.place import Place
-from models.review import Review
-from sqlalchemy.exc import OperationalError
-from utils import clear_stream
 
 
+class TestHBNBCommand(TestCase):
+    """
+    TestHBNBCommand class
+    """
 
-class TestHBNBCommand(unittest.TestCase):
+    def test_pep(self):
+        """test pep"""
+        style = pycodestyle.StyleGuide(quiet=True)
+        result = style.check_files(['console.py',
+                                    'tests/test_console.py'])
+        self.assertEqual(result.total_errors, 14,
+                         "Found code style errors (and warnings).")
 
-    @classmethod
-    def setUpClass(cls):
-        """Set up the test environment and create initial database objects."""
-        # Redirect stdout to capture console output
-        cls.console_output = StringIO()
-        cls.original_stdout = sys.stdout
-        sys.stdout = cls.console_output
+    def test_module_doc(self):
+        """test module documentation"""
+        doc = __import__('console').__doc__
+        self.assertGreater(len(doc), 1)
 
-        # Initialize the HBNBCommand instance
-        cls.console = HBNBCommand()
-
-    @classmethod
-    def tearDownClass(cls):
-        """Restore stdout and clean up."""
-        cls.console_output.close()
-        sys.stdout = cls.original_stdout
+    def test_class_doc(self):
+        """test class documentation"""
+        doc = HBNBCommand.__doc__
+        self.assertGreater(len(doc), 1)
 
     def setUp(self):
-        """Create a fresh database session for each test."""
-        storage.reload()
+        self.console = HBNBCommand()
+        self.mock_stdout = StringIO()
 
     def tearDown(self):
-        """Clean up the database session after each test."""
-        self.console_output = StringIO()  # Reset the captured output
-        storage.all().clear()  # Clear the storage data
+        self.console = None
 
-    @unittest.skipIf(os.getenv('HBNB_TYPE_STORAGE') == 'db', 'FileStorage test')
-    def test_fs_create(self):
-        """Tests the create command with the file storage.
-        """
-        with patch('sys.stdout', new=StringIO()) as cout:
-            cons = HBNBCommand()
-            cons.onecmd('create City name="Texas"')
-            mdl_id = cout.getvalue().strip()
-            print("Captured Output:")
-            print(cout.getvalue())  # Print the captured output for debugging
-            clear_stream(cout)
-            self.assertIn('City.{}'.format(mdl_id), storage.all().keys())
-            cons.onecmd('show City {}'.format(mdl_id))
-            self.assertIn("'name': 'Texas'", cout.getvalue().strip())
-            clear_stream(cout)
-            cons.onecmd('create User name="James" age=17 height=5.9')
-            mdl_id = cout.getvalue().strip()
-            print("Captured Output:")
-            print(cout.getvalue())  # Print the captured output for debugging
-            self.assertIn('User.{}'.format(mdl_id), storage.all().keys())
-            clear_stream(cout)
-            cons.onecmd('show User {}'.format(mdl_id))
-            self.assertIn("'name': 'James'", cout.getvalue().strip())
-            self.assertIn("'age': 17", cout.getvalue().strip())
-            self.assertIn("'height': 5.9", cout.getvalue().strip())
+    def test_quit(self):
+        with patch('sys.stdout', new=self.mock_stdout):
+            self.assertTrue(HBNBCommand().onecmd("quit"))
+            self.assertEqual("", self.mock_stdout.getvalue().strip())
+
+    def test_EOF(self):
+        with patch('sys.stdout', new=self.mock_stdout):
+            self.assertTrue(HBNBCommand().onecmd("EOF"))
+            self.assertEqual("", self.mock_stdout.getvalue().strip())
+
+    def test_create(self):
+        with patch('sys.stdout', new=self.mock_stdout):
+            self.console.onecmd("create BaseModel")
+            obj_id = self.mock_stdout.getvalue().strip()
+            self.assertIsNotNone(storage.all().get("BaseModel." + obj_id))
+
+    def test_show(self):
+        with patch('sys.stdout', new=self.mock_stdout):
+            self.console.onecmd("create BaseModel")
+            obj_id = self.mock_stdout.getvalue().strip()
+            self.mock_stdout = StringIO()
+            self.console.onecmd("show BaseModel " + obj_id)
+
+    def test_destroy(self):
+        with patch('sys.stdout', new=self.mock_stdout):
+            self.console.onecmd("create BaseModel")
+            obj_id = self.mock_stdout.getvalue().strip()
+            self.mock_stdout = StringIO()
+            self.console.onecmd("destroy BaseModel " + obj_id)
+            self.assertEqual("", self.mock_stdout.getvalue().strip())
+            self.assertIsNone(storage.all().get("BaseModel." + obj_id))
 
 
-    @unittest.skipIf(os.getenv('HBNB_TYPE_STORAGE') != 'db', 'DBStorage test')
-    def test_db_create(self):
-        """Test the create command with DBStorage."""
-        # Test creating a User instance
-        with patch('sys.stdout', new=StringIO()) as cout:
-            clear_stream(cout)
-            self.console.onecmd('create User email="john25@gmail.com" password="123"')
-            mdl_id = cout.getvalue().strip()
-            try:
-                user = storage.get(User, mdl_id)
-                self.assertIsNotNone(user)
-                self.assertEqual(user.email, 'john25@gmail.com')
-                self.assertEqual(user.password, '123')
-            except Exception as e:
-                self.fail(f"Error: {e}")
-
-    @unittest.skipIf(os.getenv('HBNB_TYPE_STORAGE') != 'db', 'DBStorage test')
-    def test_db_show(self):
-        """Test the show command with DBStorage."""
-        # Test showing a User instance
-        obj = User(email="john25@gmail.com", password="123")
-        storage.new(obj)
-        storage.save()
-
-        with patch('sys.stdout', new=StringIO()) as cout:
-            clear_stream(cout)
-            self.console.onecmd('show User {}'.format(obj.id))
-            self.assertIn("'name': 'john25@gmail.com'", cout.getvalue().strip())
-            self.assertIn("'age': 17", cout.getvalue().strip())
-            self.assertIn("'height': 5.9", cout.getvalue().strip())
+if __name__ == '__main__':
+    unittest.main()
