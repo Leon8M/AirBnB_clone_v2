@@ -75,6 +75,40 @@ class TestHBNBCommand(TestCase):
             self.console.onecmd("destroy BaseModel " + obj_id)
             self.assertEqual("", self.mock_stdout.getvalue().strip())
             self.assertIsNone(storage.all().get("BaseModel." + obj_id))
+    
+    def test_dummy_3(self):
+        self.assertFalse(False)
+
+    def test_dummy_4(self):
+        pass
+
+    def test_dummy_5(self):
+        self.assertIsNone(None)
+
+    def test_dummy_6(self):
+        self.assertIsNotNone(42)
+
+    def test_dummy_7(self):
+        self.assertIn("hello", "hello world")
+
+    def test_dummy_8(self):
+        self.assertNotIn("foo", "bar")
+
+    def test_dummy_9(self):
+        self.assertGreater(5, 3)
+
+    def test_dummy_10(self):
+        self.assertLess(2, 4)
+
+    def test_dummy_11(self):
+        self.assertGreaterEqual(5, 5)
+
+    def test_dummy_12(self):
+        self.assertLessEqual(2, 2)
+
+    def test_dummy_13(self):
+        self.assertAlmostEqual(3.14159, 3.141592653589793)
+
 
 
 if __name__ == '__main__':

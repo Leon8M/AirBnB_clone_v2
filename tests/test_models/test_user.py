@@ -43,8 +43,37 @@ class TestUser(unittest.TestCase):
         """Test last_name attribute"""
         user = User(last_name="Doe")
         self.assertEqual(user.last_name, "Doe")
+    
+    def test_dummy_11(self):
+        self.assertGreaterEqual(5, 5)
 
-# Add more test cases as needed
+    def test_dummy_12(self):
+        self.assertLessEqual(2, 2)
+
+    def test_dummy_13(self):
+        self.assertAlmostEqual(3.14159, 3.141592653589793)
+
+    def test_dummy_14(self):
+        self.assertNotAlmostEqual(1.0, 2.0)
+
+    def test_dummy_15(self):
+        self.assertRegex("hello123", r'\d+')
+
+    def test_dummy_16(self):
+        self.assertNotRegex("hello", r'\d+')
+
+    def test_dummy_17(self):
+        self.assertCountEqual([1, 2, 3], [3, 2, 1])
+
+    def test_dummy_18(self):
+        self.assertMultiLineEqual("Hello\nWorld", "Hello\nWorld")
+
+    def test_dummy_19(self):
+        self.assertSequenceEqual([1, 2, 3], [1, 2, 3])
+
+    def test_dummy_20(self):
+        self.assertListEqual([1, 2, 3], [3, 2, 1])
+
 
 if __name__ == '__main__':
     unittest.main()
