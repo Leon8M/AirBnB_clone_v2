@@ -12,6 +12,8 @@ from models.amenity import Amenity
 from models.place import Place
 from models.review import Review
 from sqlalchemy.exc import OperationalError
+from utils import clear_stream
+
 
 
 class TestHBNBCommand(unittest.TestCase):
@@ -44,22 +46,30 @@ class TestHBNBCommand(unittest.TestCase):
 
     @unittest.skipIf(os.getenv('HBNB_TYPE_STORAGE') == 'db', 'FileStorage test')
     def test_fs_create(self):
-        """Test the create command with FileStorage."""
-        # Test creating a City and User
+        """Tests the create command with the file storage.
+        """
         with patch('sys.stdout', new=StringIO()) as cout:
-            self.console.onecmd('create City name="Texas"')
+            cons = HBNBCommand()
+            cons.onecmd('create City name="Texas"')
             mdl_id = cout.getvalue().strip()
+            print("Captured Output:")
+            print(cout.getvalue())  # Print the captured output for debugging
+            clear_stream(cout)
             self.assertIn('City.{}'.format(mdl_id), storage.all().keys())
-            self.console.onecmd('show City {}'.format(mdl_id))
+            cons.onecmd('show City {}'.format(mdl_id))
             self.assertIn("'name': 'Texas'", cout.getvalue().strip())
-
-            self.console.onecmd('create User name="James" age=17 height=5.9')
+            clear_stream(cout)
+            cons.onecmd('create User name="James" age=17 height=5.9')
             mdl_id = cout.getvalue().strip()
+            print("Captured Output:")
+            print(cout.getvalue())  # Print the captured output for debugging
             self.assertIn('User.{}'.format(mdl_id), storage.all().keys())
-            self.console.onecmd('show User {}'.format(mdl_id))
+            clear_stream(cout)
+            cons.onecmd('show User {}'.format(mdl_id))
             self.assertIn("'name': 'James'", cout.getvalue().strip())
             self.assertIn("'age': 17", cout.getvalue().strip())
             self.assertIn("'height': 5.9", cout.getvalue().strip())
+
 
     @unittest.skipIf(os.getenv('HBNB_TYPE_STORAGE') != 'db', 'DBStorage test')
     def test_db_create(self):
