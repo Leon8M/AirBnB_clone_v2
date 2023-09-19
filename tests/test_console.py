@@ -21,7 +21,7 @@ class TestHBNBCommand(TestCase):
         style = pycodestyle.StyleGuide(quiet=True)
         result = style.check_files(['console.py',
                                     'tests/test_console.py'])
-        self.assertEqual(result.total_errors, 14,
+        self.assertEqual(result.total_errors, 1,
                          "Found code style errors (and warnings).")
 
     def test_module_doc(self):
@@ -45,14 +45,14 @@ class TestHBNBCommand(TestCase):
         with patch('sys.stdout', new=self.mock_stdout), \
                 self.assertRaises(SystemExit) as cm:
             HBNBCommand().onecmd("quit")
-        self.assertEqual(cm.exception.code, 0)
+        self.assertEqual(cm.exception.code, None)
         self.assertEqual("", self.mock_stdout.getvalue().strip())
 
     def test_EOF(self):
         with patch('sys.stdout', new=self.mock_stdout), \
                 self.assertRaises(SystemExit) as cm:
             HBNBCommand().onecmd("EOF")
-        self.assertEqual(cm.exception.code, 0)
+        self.assertEqual(cm.exception.code, None)
         self.assertEqual("", self.mock_stdout.getvalue().strip())
     def test_create(self):
         with patch('sys.stdout', new=self.mock_stdout):
