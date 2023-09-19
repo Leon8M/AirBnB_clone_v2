@@ -1,5 +1,6 @@
 import os
 import unittest
+import sys
 from io import StringIO
 from unittest.mock import patch
 from console import HBNBCommand
@@ -38,7 +39,7 @@ class TestHBNBCommand(unittest.TestCase):
 
     def tearDown(self):
         """Clean up the database session after each test."""
-        del self.console_output.getvalue()  # Clear the captured output
+        self.console_output = StringIO()  # Reset the captured output
 
     @unittest.skipIf(os.getenv('HBNB_TYPE_STORAGE') == 'db', 'FileStorage test')
     def test_fs_create(self):
