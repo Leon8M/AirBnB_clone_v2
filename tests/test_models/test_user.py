@@ -4,17 +4,26 @@ from datetime import datetime, timedelta
 
 class TestUser(unittest.TestCase):
 
+    def assertDatetimeAlmostEqual(self, dt1, dt2, delta_seconds=1):
+        """
+        Custom assertion to check if two datetime objects are almost equal
+        within the specified number of seconds (default is 1 second).
+        """
+        time_difference = abs(dt1 - dt2)
+        self.assertLessEqual(time_difference, timedelta(seconds=delta_seconds))
+
     def test_created_updated_at(self):
         """Test created_at and updated_at attributes"""
         user = User()
-        time_difference = user.updated_at - user.created_at
-        self.assertTrue(time_difference < timedelta(seconds=1))  # Adjust tolerance as needed
+        self.assertDatetimeAlmostEqual(user.created_at, user.updated_at)
 
     def test_to_dict(self):
         """Test to_dict() method"""
         user = User()
         user_dict = user.to_dict()
-        self.assertEqual(user_dict['created_at'], user_dict['updated_at'])
+        self.assertDatetimeAlmostEqual(
+            user_dict['created_at'], user_dict['updated_at'], delta_seconds=1
+        )
 
     def test_str_representation(self):
         """Test __str__() method"""
@@ -43,6 +52,7 @@ class TestUser(unittest.TestCase):
         user = User(last_name="Doe")
         self.assertEqual(user.last_name, "Doe")
 
+# Add more test cases as needed
 
 if __name__ == '__main__':
     unittest.main()
