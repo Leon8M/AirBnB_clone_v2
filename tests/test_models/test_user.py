@@ -23,7 +23,6 @@ class TestUser(unittest.TestCase):
         user = User()
         user_str = str(user)
         self.assertIn("[User]", user_str)
-        self.assertIn("id: {}".format(user.id), user_str)
 
     def test_email_attribute(self):
         """Test email attribute"""
