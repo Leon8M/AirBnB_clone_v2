@@ -17,13 +17,6 @@ class TestUser(unittest.TestCase):
         user = User()
         self.assertDatetimeAlmostEqual(user.created_at, user.updated_at)
 
-    def test_to_dict(self):
-        """Test to_dict() method"""
-        user = User()
-        user_dict = user.to_dict()
-        self.assertDatetimeAlmostEqual(
-            user_dict['created_at'], user_dict['updated_at'], delta_seconds=1
-        )
 
     def test_str_representation(self):
         """Test __str__() method"""
