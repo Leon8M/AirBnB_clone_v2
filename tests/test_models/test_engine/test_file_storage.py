@@ -31,10 +31,12 @@ class test_fileStorage(unittest.TestCase):
     def test_new(self):
         """ New object is correctly added to __objects """
         new = BaseModel()
-        temp = None
+        temp = None  # Assign temp a default value
         for obj in storage.all().values():
             temp = obj
-        self.assertTrue(temp is obj)
+            print("Inside loop, temp:", temp)
+        print("Outside loop, temp:", temp)
+        self.assertTrue(temp is not None)  # Ensure temp has been assigned
 
     def test_all(self):
         """ __objects is properly returned """
