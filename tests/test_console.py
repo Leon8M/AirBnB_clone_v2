@@ -40,6 +40,7 @@ class TestHBNBCommand(unittest.TestCase):
     def tearDown(self):
         """Clean up the database session after each test."""
         self.console_output = StringIO()  # Reset the captured output
+        storage.all().clear()  # Clear the storage data
 
     @unittest.skipIf(os.getenv('HBNB_TYPE_STORAGE') == 'db', 'FileStorage test')
     def test_fs_create(self):
