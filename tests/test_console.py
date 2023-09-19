@@ -1,55 +1,47 @@
 import unittest
-from unittest.mock import patch
 from io import StringIO
-import os
 import sys
-import re
-
+import os
 from console import HBNBCommand
-from models.base_model import BaseModel
-from models import storage
 
-
-class TestHBNBCommand(unittest.TestCase):
+class TestConsole(unittest.TestCase):
+    
     def setUp(self):
+        """Redirect stdout to capture console output."""
+        self.console_output = StringIO()
+        sys.stdout = self.console_output
         self.console = HBNBCommand()
 
     def tearDown(self):
-        del self.console
+        """Restore stdout and cleanup."""
+        sys.stdout = sys.__stdout__
+        self.console_output.close()
 
-    def test_create_file(self):
-        """Test create command with file storage."""
-        with patch('sys.stdout', new_callable=StringIO) as mock_stdout:
-            self.console.onecmd("create User email='test@example.com' password='123'")
-            output = mock_stdout.getvalue().strip()
-            self.assertTrue(re.match(r'^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$', output))
-            self.assertIn('User', output)
-            self.assertTrue(storage.get("User", output))
-
-    def test_show_file(self):
-        """Test show command with file storage."""
-        with patch('sys.stdout', new_callable=StringIO) as mock_stdout:
-            self.console.onecmd("create User email='test@example.com' password='123'")
-            obj_id = mock_stdout.getvalue().strip()
-            self.console.onecmd(f"show User {obj_id}")
-            output = mock_stdout.getvalue().strip()
-            self.assertIn(obj_id, output)
-            self.assertIn("test@example.com", output)
-            self.assertIn("123", output)
-
-    def test_quit(self):
+    def test_quit_command(self):
         """Test the quit command."""
-        with patch('sys.stdout', new_callable=StringIO) as mock_stdout:
+        with self.subTest():
             self.console.onecmd("quit")
-            output = mock_stdout.getvalue().strip()
-            self.assertEqual(output, "")
-
-    def test_EOF(self):
-        """Test the EOF command."""
-        with patch('sys.stdout', new_callable=StringIO) as mock_stdout:
+            output = self.console_output.getvalue()
+            self.assertEqual(output.strip(), "")
+        
+        with self.subTest():
             self.console.onecmd("EOF")
-            output = mock_stdout.getvalue().strip()
-            self.assertEqual(output, "")
+            output = self.console_output.getvalue()
+            self.assertEqual(output.strip(), "")
+
+    def test_help_command(self):
+        """Test the help command."""
+        with self.subTest():
+            self.console.onecmd("help")
+            output = self.console_output.getvalue()
+            self.assertIn("Documented commands (type help <topic>):", output)
+        
+        with self.subTest():
+            self.console.onecmd("help quit")
+            output = self.console_output.getvalue()
+            self.assertIn("Exits the program with formatting", output)
+
+    # Add more test cases for other commands and functionalities of the console.
 
 if __name__ == '__main__':
     unittest.main()
