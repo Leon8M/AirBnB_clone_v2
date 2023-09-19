@@ -42,15 +42,18 @@ class TestHBNBCommand(TestCase):
         self.console = None
 
     def test_quit(self):
-        with patch('sys.stdout', new=self.mock_stdout):
-            self.assertTrue(HBNBCommand().onecmd("quit"))
-            self.assertEqual("", self.mock_stdout.getvalue().strip())
+        with patch('sys.stdout', new=self.mock_stdout), \
+                self.assertRaises(SystemExit) as cm:
+            HBNBCommand().onecmd("quit")
+        self.assertEqual(cm.exception.code, 0)
+        self.assertEqual("", self.mock_stdout.getvalue().strip())
 
     def test_EOF(self):
-        with patch('sys.stdout', new=self.mock_stdout):
-            self.assertTrue(HBNBCommand().onecmd("EOF"))
-            self.assertEqual("", self.mock_stdout.getvalue().strip())
-
+        with patch('sys.stdout', new=self.mock_stdout), \
+                self.assertRaises(SystemExit) as cm:
+            HBNBCommand().onecmd("EOF")
+        self.assertEqual(cm.exception.code, 0)
+        self.assertEqual("", self.mock_stdout.getvalue().strip())
     def test_create(self):
         with patch('sys.stdout', new=self.mock_stdout):
             self.console.onecmd("create BaseModel")
