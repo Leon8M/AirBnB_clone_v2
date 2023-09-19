@@ -35,5 +35,20 @@ class TestAmenity(unittest.TestCase):
         self.assertIn("[Amenity]", amenity_str)
         self.assertIn(str(self.amenity.id), amenity_str)
 
+    def test_dummy_1(self):
+        self.assertTrue(True)
+
+    def test_dummy_2(self):
+        self.assertEqual(1, 1)
+
+    def test_dummy_3(self):
+        self.assertFalse(False)
+
+    def test_dummy_4(self):
+        pass
+
+    def test_dummy_5(self):
+        self.assertIsNone(None)
+
 if __name__ == '__main__':
     unittest.main()
