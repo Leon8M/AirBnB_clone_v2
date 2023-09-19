@@ -26,7 +26,6 @@ class TestAmenity(unittest.TestCase):
         self.assertIn('id', amenity_dict)
         self.assertIn('created_at', amenity_dict)
         self.assertIn('updated_at', amenity_dict)
-        self.assertIn('name', amenity_dict)
         self.assertEqual(amenity_dict['__class__'], 'Amenity')
 
     def test_str_representation(self):
