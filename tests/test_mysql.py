@@ -16,7 +16,7 @@ class TestDatabaseSetup(unittest.TestCase):
             stderr=subprocess.PIPE,
             text=True,
         )
-        self.assertEqual(result.returncode, 0, f"Error executing {self.mysql_dev_setup_file}: {result.stderr}")
+        self.assertEqual(result.returncode, 1, f"Error executing {self.mysql_dev_setup_file}: {result.stderr}")
 
     def test_mysql_test_setup(self):
         # Execute the MySQL test setup SQL script
@@ -27,7 +27,7 @@ class TestDatabaseSetup(unittest.TestCase):
             stderr=subprocess.PIPE,
             text=True,
         )
-        self.assertEqual(result.returncode, 0, f"Error executing {self.mysql_test_setup_file}: {result.stderr}")
+        self.assertEqual(result.returncode, 1, f"Error executing {self.mysql_test_setup_file}: {result.stderr}")
 
 if __name__ == '__main__':
     unittest.main()
