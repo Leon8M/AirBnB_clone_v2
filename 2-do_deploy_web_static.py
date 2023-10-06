@@ -1,45 +1,42 @@
 #!/usr/bin/python3
-""""Fabric script that distributes an archive to web servers"""
+"""Fabric script that distributes an archive to web servers"""
 
 from fabric.api import *
 import os
 
-env.hosts = ['3.235.198.120', '3.239.50.204']
+env.hosts = ['52.201.219.250', '100.26.138.113']
 
 
 def do_deploy(archive_path):
     """Archive distributor"""
+    if not os.path.exists(archive_path):
+        print('Archive file does not exist')
+        return False
+
     try:
-        try:
-            if os.path.exists(archive_path):
-                arc_tgz = archive_path.split("/")
-                arg_save = arc_tgz[1]
-                arc_tgz = arc_tgz[1].split('.')
-                arc_tgz = arc_tgz[0]
+        arc_tgz = archive_path.split("/")[-1].split('.')[0]
 
-                """Upload archive to the server"""
-                put(archive_path, '/tmp')
+        # Upload archive to the server
+        put(archive_path, '/tmp/')
 
-                """Save folder paths in variables"""
-                uncomp_fold = '/data/web_static/releases/{}'.format(arc_tgz)
-                tmp_location = '/tmp/{}'.format(arg_save)
+        # Create /data/web_static/releases/ if it doesn't exist
+        run('mkdir -p /data/web_static/releases/')
 
-                """Run remote commands on the server"""
-                run('mkdir -p {}'.format(uncomp_fold))
-                run('tar -xvzf {} -C {}'.format(tmp_location, uncomp_fold))
-                run('rm {}'.format(tmp_location))
-                run('mv {}/web_static/* {}'.format(uncomp_fold, uncomp_fold))
-                run('rm -rf {}/web_static'.format(uncomp_fold))
-                run('rm -rf /data/web_static/current')
-                run('ln -sf {} /data/web_static/current'.format(uncomp_fold))
-                run('sudo service nginx restart')
-                return True
-            else:
-                print('File does not exist')
-                return False
-        except Exception as err:
-            print(err)
-            return False
-    except Exception:
-        print('Error')
+        # Save folder paths in variables
+        uncomp_fold = '/data/web_static/releases/{}'.format(arc_tgz)
+        tmp_location = '/tmp/{}'.format(arc_tgz)
+
+        # Run remote commands on the server
+        run('mkdir -p {}'.format(uncomp_fold))
+        run('tar -xvzf {} -C {}'.format(tmp_location, uncomp_fold))
+        run('rm {}'.format(tmp_location))
+        run('mv {}/web_static/* {}'.format(uncomp_fold, uncomp_fold))
+        run('rm -rf {}/web_static'.format(uncomp_fold))
+        run('rm -rf /data/web_static/current')
+        run('ln -sf {} /data/web_static/current'.format(uncomp_fold))
+        sudo('service nginx restart')
+        print('New version deployed!')
+        return True
+    except Exception as e:
+        print('Deployment failed:', str(e))
         return False
